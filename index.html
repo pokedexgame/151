@@ -948,8 +948,8 @@ body {
 #map-button, #achievements-button, #shinies-button, #shop-button, #bag-button, #badges-button { cursor: pointer; }
 
 /* --- CORRECTED SCROLLING GRID STYLES --- */
-/* This style is for HORIZONTAL grids like the Shop and Shinies page */
-#item-display-grid, #shiny-grid {
+/* This style is for HORIZONTAL grids like the Shop and Shinies page AND NOW THE BADGE PAGE */
+#item-display-grid, #shiny-grid, #badge-grid {
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: repeat(2, auto);
@@ -960,15 +960,6 @@ body {
     justify-content: flex-start;
     align-items: start;
 }
-
-/* This style is for the VERTICAL badge grid */
-#badge-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    /* No height or overflow properties, allowing the parent .info-panel-content-area to scroll */
-}
-
 
 .shiny-grid-item {
   background: rgba(0,0,0,0.05);
@@ -1104,7 +1095,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; /* Make badges fill grid cells */
+    width: 160px; /* Fixed width for horizontal scrolling */
 }
 
 /* --- NEW: Style for the clickable challenge badge --- */
