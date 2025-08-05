@@ -5418,7 +5418,8 @@ body {
         if (!e4ChallengeState.active) return;
 
         const challenger = e4ChallengeState.currentChallenger;
-        const pokemonId = challenger.pokemonIds[e4ChallengeState.pokemonIndex];
+        // BUG FIX: Use modulo operator to prevent array out of bounds error
+        const pokemonId = challenger.pokemonIds[e4ChallengeState.pokemonIndex % challenger.pokemonIds.length];
         const pokemon = pokemonData.find(p => p.id === pokemonId);
         e4ChallengeState.currentPokemon = pokemon;
 
