@@ -1597,11 +1597,8 @@ body {
 
   </body>
 </html>
-
-
   <script id="pokedex-data" type="application/json">
-
-    [
+   [
   {
     "id": 1,
     "name": "Bulbasaur",
@@ -4104,8 +4101,7 @@ body {
 ]
 
   </script>
-<script>
-
+  <script>
     // Game state variables
     let pokemonData = [];
     const pokemonDataScript = document.getElementById("pokedex-data");
@@ -4157,11 +4153,10 @@ body {
         leaderHP: 0
     };
 
-    // UPDATED: New state object for the Elite Four challenge
     let e4ChallengeState = {
         active: false,
-        challengerIndex: 0, // 0-3 for E4, 4 for Champion
-        pokemonIndex: 0, // index within the current challenger's team
+        challengerIndex: 0,
+        pokemonIndex: 0,
         playerHP: 3,
         challengerHP: 5,
         currentChallenger: null,
@@ -4216,7 +4211,6 @@ body {
         giovanni: { name: "Giovanni", badgeName: "Earth Badge", sprite: "sprites/gym_giovanni.png", badgeSprite: "sprites/badge_earth.png", unlock: 80, pokemonIds: [111, 51, 31, 34, 112], bonusType: 'Ground', achievement: 'earthBadge', secondaryBonus: { text: "Grants a Pokéyen bonus on failed enemy encounters." } }
     };
 
-    // UPDATED: Added HP values to each challenger
     const ELITE_FOUR_DATA = [
         { name: "Lorelei", sprite: "sprites/e4_lorelei.png", pokemonIds: [87, 91, 80, 124, 131], hp: 5 },
         { name: "Bruno", sprite: "sprites/e4_bruno.png", pokemonIds: [95, 107, 106, 95, 68], hp: 5 },
@@ -6159,6 +6153,7 @@ body {
         return container;
     }
 
+    // --- UPDATED buildBadgesView FUNCTION ---
     function buildBadgesView() {
         const container = document.createElement('div');
         container.className = 'info-panel-content-area';
@@ -6166,6 +6161,7 @@ body {
         const grid = document.createElement('div');
         grid.id = 'badge-grid';
 
+        // Display the 8 gym badges
         for (const key in GYM_DATA) {
             const gym = GYM_DATA[key];
             const isEarned = earnedBadges[key];
@@ -6182,36 +6178,42 @@ body {
             `;
             grid.appendChild(entry);
         }
-        container.appendChild(grid);
 
         const badgeCount = Object.keys(earnedBadges).filter(key => !key.startsWith('failed_') && key !== 'champion').length;
+        
+        // If all 8 badges are earned, add the Elite Four "badge"
         if (badgeCount >= 8) {
-            const e4Container = document.createElement('div');
-            e4Container.className = 'e4-challenge-container';
-            const e4Box = document.createElement('div');
-            e4Box.className = 'e4-challenge-box';
+            const e4Entry = document.createElement('div');
+            e4Entry.className = 'badge-entry'; // Use the same class for consistent styling
 
             if (earnedBadges.champion) {
-                e4Box.classList.add('champion', 'disabled');
-                e4Box.innerHTML = `
-                    <h3>👑 Kanto Champion! 👑</h3>
+                // If champion, show a disabled state
+                e4Entry.classList.add('locked'); // Use 'locked' to grayscale it
+                e4Entry.innerHTML = `
+                    <img src="sprites/e4.png" alt="Elite Four">
+                    <h4>Pokémon League</h4>
+                    <p><strong>Champion!</strong></p>
                     <p>You have conquered the Pokémon League!</p>
                 `;
             } else {
-                e4Box.innerHTML = `
-                    <h3>Challenge the Elite Four!</h3>
-                    <p>You have all 8 badges! Prove you are the best!</p>
+                // If not champion, make it active and clickable
+                e4Entry.classList.add('e4-challenge-active');
+                e4Entry.innerHTML = `
+                    <img src="sprites/e4.png" alt="Elite Four">
+                    <h4>Challenge Elite Four</h4>
+                    <p>Prove you are the very best!</p>
+                    <p>Click to begin the ultimate test!</p>
                 `;
-                e4Box.onclick = () => {
+                e4Entry.onclick = () => {
                     if (e4ChallengeState.active) return;
                     exitPokedexView();
                     setTimeout(startE4Challenge, 200);
                 };
             }
-            e4Container.appendChild(e4Box);
-            container.appendChild(e4Container);
+            grid.appendChild(e4Entry);
         }
-
+        
+        container.appendChild(grid);
         return container;
     }
 
@@ -6325,8 +6327,15 @@ body {
     // --- NEW & UPDATED FUNCTIONS ---
 
     function resetGameData() {
-        localStorage.clear();
-        location.reload();
+        showConfirmModal(
+            'Reset Game?',
+            'Are you sure? This will erase all your caught Pokémon, items, and achievements permanently.',
+            'Reset',
+            () => {
+                localStorage.clear();
+                location.reload();
+            }
+        );
     }
 
     function buildPokedexInfoView() {
@@ -6416,14 +6425,7 @@ body {
         const resetButton = document.createElement('button');
         resetButton.className = 'reset-button';
         resetButton.textContent = 'Reset Game Data';
-        resetButton.onclick = () => {
-            showConfirmModal(
-                'Reset Game?',
-                'Are you sure? This will erase all your caught Pokémon, items, and achievements permanently.',
-                'Reset',
-                resetGameData
-            );
-        };
+        resetButton.onclick = resetGameData;
         resetContainer.appendChild(resetButton);
         container.appendChild(resetContainer);
 
@@ -6516,6 +6518,3 @@ body {
         return container;
     }
   </script>
-
-</body>
-</html>
