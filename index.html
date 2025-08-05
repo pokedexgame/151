@@ -233,8 +233,8 @@ body {
 }
 
 @keyframes shinyGlow {
-  0%, 100% { filter: drop-shadow(0 0 15px gold) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
-  50% { filter: drop-shadow(0 0 25px gold) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+  0%, 100% { filter: drop-shadow(0 0 15px gold) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); }
+  50% { filter: drop-shadow(0 0 25px gold) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); box-shadow: 0 0 30px rgba(255, 215, 0, 1); }
 }
 
 .screen-details {
@@ -414,7 +414,7 @@ body {
   50% { box-shadow: 0 4px 20px rgba(255,215,0,0.6); }
 }
 
-/* --- START: CORRECTED LAYOUT FROM WORKING FILE --- */
+/* --- START: LAYOUT STYLES --- */
 
 .game-container.info-mode-active {
     padding: 0;
@@ -462,7 +462,7 @@ body {
     flex-direction: column;
     gap: 0.5rem;
 }
-/* --- END: CORRECTED LAYOUT --- */
+/* --- END: LAYOUT STYLES --- */
 
 
 .info-panel-content-area h3 {
@@ -947,19 +947,25 @@ body {
 
 #map-button, #achievements-button, #shinies-button, #shop-button, #bag-button, #badges-button { cursor: pointer; }
 
-/* --- THIS IS THE KEY FIX FOR THE ELITE 4 BUTTON --- */
-#item-display-grid, #shiny-grid, #badge-grid {
+#item-display-grid, #shiny-grid {
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: repeat(2, auto);
     gap: 0.5rem;
     overflow-x: auto;
-    /* overflow-y: hidden; <-- REMOVED */
+    overflow-y: hidden;
     padding-bottom: 1rem;
     justify-content: flex-start;
     align-items: start;
-    /* height: 100%; <-- REMOVED */
 }
+
+/* --- UPDATED: Badge Grid Style for Wrapping --- */
+#badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
 
 .shiny-grid-item {
   background: rgba(0,0,0,0.05);
@@ -1085,42 +1091,6 @@ body {
 .e4-mode .pokemon-display { background: linear-gradient(145deg, #4a0e4e, #2d1b69); }
 .e4-mode .question-text { background: #fff; color: #333; border: 3px solid #ffd700; }
 
-.e4-challenge-container {
-    padding: 1rem;
-    margin-top: 1rem;
-    width: 100%;
-}
-
-.e4-challenge-box {
-    background: linear-gradient(145deg, #2d3748, #1a202c);
-    color: white;
-    padding: 1.5rem;
-    border-radius: 15px;
-    text-align: center;
-    border: 3px solid #ffd700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-.e4-challenge-box:hover:not(.disabled) {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-}
-.e4-challenge-box h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    color: #ffd700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-.e4-challenge-box p { margin: 0; color: #a0aec0; }
-.e4-challenge-box.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    border-color: #718096;
-}
-.e4-challenge-box.champion h3 { color: #4ecdc4; }
-.e4-challenge-box.champion { border-color: #4ecdc4; }
-
 .badge-entry {
     background: white;
     border: 1px solid #ddd;
@@ -1131,8 +1101,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 160px;
+    width: 100%; /* Make badges fill grid cells */
 }
+
+/* --- NEW: Style for the clickable challenge badge --- */
+.badge-entry.e4-challenge-active {
+    cursor: pointer;
+    border-color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+    animation: shinyGlow 2s infinite;
+}
+
 .badge-entry.locked {
     opacity: 0.6;
     filter: grayscale(80%);
