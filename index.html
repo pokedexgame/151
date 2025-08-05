@@ -6169,7 +6169,7 @@ body {
                 <img src="${gym.badgeSprite}" alt="${gym.badgeName}">
                 <h4>${gym.badgeName}</h4>
                 <p>Defeat ${gym.name}</p>
-                <p><strong>Shiny Bonus:</strong> +5% chance for ${gym.bonusType}-types.</p>
+                <p><strong>Shiny Bonus:</strong> +5% chance for ${gym.bonusType}-type Pokémon.</p>
                 <p><strong>Effect:</strong> ${gym.secondaryBonus.text}</p>
             `;
             grid.appendChild(entry);
@@ -6197,7 +6197,7 @@ body {
                 e4Entry.innerHTML = `
                     <img src="sprites/e4.png" alt="Elite Four">
                     <h4>Challenge Elite Four</h4>
-                    <p>Prove you are the very best!</p>
+                    <p>Prove that you are the very best!</p>
                     <p>Click to begin the ultimate test! Beat the Elite Four and the Champion!</p>
                 `;
                 e4Entry.onclick = () => {
