@@ -947,6 +947,8 @@ body {
 
 #map-button, #achievements-button, #shinies-button, #shop-button, #bag-button, #badges-button { cursor: pointer; }
 
+/* --- CORRECTED SCROLLING GRID STYLES --- */
+/* This style is for HORIZONTAL grids like the Shop and Shinies page */
 #item-display-grid, #shiny-grid {
     display: grid;
     grid-auto-flow: column;
@@ -959,11 +961,12 @@ body {
     align-items: start;
 }
 
-/* --- UPDATED: Badge Grid Style for Wrapping --- */
+/* This style is for the VERTICAL badge grid */
 #badge-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem;
+    /* No height or overflow properties, allowing the parent .info-panel-content-area to scroll */
 }
 
 
@@ -1597,6 +1600,9 @@ body {
 
   </body>
 </html>
+ 
+  <script>
+
   <script id="pokedex-data" type="application/json">
    [
   {
