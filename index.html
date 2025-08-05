@@ -447,12 +447,10 @@ body {
   position: relative;
   padding: 0;
 }
-
-/* Generic scroller for info panels (Achievements, Shop, etc.) */
 .info-panel-content-area {
-    height: 100%;
+    flex: 1; /* This tells the element to grow and fill the available space */
     overflow-y: auto;
-    padding: 1rem 1rem 120px 1rem; /* This padding creates space for the sticky back button */
+    padding: 1rem; /* The large bottom padding is no longer needed */
     color: #333;
     position: relative;
 }
@@ -730,13 +728,12 @@ body {
 }
 
 #back-button-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    /* position: absolute; and related properties removed */
+    flex-shrink: 0; /* Prevents this container from shrinking */
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(to top, rgba(255, 255, 255, 1) 70%, rgba(255, 255, 255, 0));
-    z-index: 10;
+    background: #fff; /* Changed from a gradient to a solid background */
+    border-top: 1px solid #e2e8f0; /* Adds a clean separator line */
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
