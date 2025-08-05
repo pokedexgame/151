@@ -448,9 +448,9 @@ body {
   padding: 0;
 }
 .info-panel-content-area {
-    flex: 1; /* This tells the element to grow and fill the available space */
+    flex: 1; /* This is the key change to make it fill space correctly. */
     overflow-y: auto;
-    padding: 1rem; /* The large bottom padding is no longer needed */
+    padding: 1rem; /* The large 120px bottom padding is no longer needed. */
     color: #333;
     position: relative;
 }
@@ -728,15 +728,15 @@ body {
 }
 
 #back-button-container {
-    /* position: absolute; and related properties removed */
-    flex-shrink: 0; /* Prevents this container from shrinking */
+    flex-shrink: 0; /* Prevents the button from shrinking. */
     width: 100%;
     padding: 1rem;
-    background: #fff; /* Changed from a gradient to a solid background */
-    border-top: 1px solid #e2e8f0; /* Adds a clean separator line */
+    background: #fff;
+    border-top: 1px solid #e2e8f0; /* Adds a separator line. */
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    /* All 'position: absolute' properties are removed. */
 }
 
 #back-button{
@@ -1078,9 +1078,12 @@ body {
 }
 .game-container.info-mode-active #pokedex-info-display {
     position: static;
-    height: 100%; /* Fill its new parent */
+    /* height: 100%; <-- THIS IS THE LINE TO REMOVE. */
     border-radius: 0;
     background: #fff;
+    /* ADDING a flex display to properly manage its children. */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Evolution & Confirmation Modal Styles */
