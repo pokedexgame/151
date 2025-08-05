@@ -72,7 +72,7 @@ body {
   flex: 1; /* Allow container to fill remaining vertical space */
   min-height: 0; /* Allow shrinking */
   padding: 1rem;
-  gap: 0; /* MODIFIED: Use margins for more precise control */
+  gap: 0;
 }
 
 /* Pokedex Device */
@@ -80,7 +80,7 @@ body {
   background: linear-gradient(145deg, #dc143c, #b22222);
   border-radius: 20px;
   padding: 1rem;
-  padding-top: 3.5rem; /* MODIFIED: Adjusted top padding */
+  padding-top: 3.5rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   border: 3px solid #8b0000;
   position: relative;
@@ -91,7 +91,6 @@ body {
   min-height: 0;
 }
 
-/* MODIFIED: Adjusted size and position of the main blue light */
 .pokedex-device::before {
   content: '';
   position: absolute;
@@ -105,7 +104,6 @@ body {
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* MODIFIED: Moved the small lights up to match */
 .pokedex-lights {
   position: absolute;
   top: 0.8rem;
@@ -135,7 +133,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Prevents animations from spilling out */
+  overflow: hidden;
 }
 
 .pokemon-display {
@@ -152,7 +150,6 @@ body {
   padding: 0.2rem;
 }
 
-/* NEW: Battle HUD for Gym Fights */
 #battle-hud {
     position: absolute;
     top: 5px;
@@ -179,12 +176,10 @@ body {
     gap: 8px;
 }
 
-/* REVISED: Player HP is now bottom-left */
 #player-hp-container {
     align-self: flex-start;
 }
 
-/* REVISED: Leader HP is now top-right */
 #leader-hp-container {
     align-self: flex-end;
 }
@@ -210,7 +205,6 @@ body {
     transform: scale(0);
     opacity: 0;
 }
-
 
 .pokemon-display.energy-burst {
   background: radial-gradient(circle, #ffffff 10%, #ffff00 30%, #ff6600 60%, #ff0000 100%);
@@ -272,8 +266,6 @@ body {
   background: #333;
 }
 
-/* LAYOUT WRAPPER */
-/* MODIFIED: Reduced margin-top for green arrow space */
 #bottom-content-area {
   flex-shrink: 0;
   display: flex;
@@ -282,8 +274,7 @@ body {
   margin-top: 0.5rem;
 }
 
-/* MODIFIED: Removed absolute positioning to allow shrink-to-fit */
-.question-answers-area, #pokedex-info-display {
+.question-answers-area {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -373,23 +364,10 @@ body {
   margin-top: 0.75rem;
 }
 
-.pokedex-grid::-webkit-scrollbar {
-  height: 4px;
-}
-
-.pokedex-grid::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.1);
-  border-radius: 4px;
-}
-
-.pokedex-grid::-webkit-scrollbar-thumb {
-  background: #4ecdc4;
-  border-radius: 4px;
-}
-
-.pokedex-grid::-webkit-scrollbar-thumb:hover {
-  background: #44a08d;
-}
+.pokedex-grid::-webkit-scrollbar { height: 4px; }
+.pokedex-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+.pokedex-grid::-webkit-scrollbar-thumb { background: #4ecdc4; border-radius: 4px; }
+.pokedex-grid::-webkit-scrollbar-thumb:hover { background: #44a08d; }
 
 .pokemon-card {
   flex: 0 0 auto;
@@ -436,17 +414,57 @@ body {
   50% { box-shadow: 0 4px 20px rgba(255,215,0,0.6); }
 }
 
-/* Pokedex Info Display Area */
+/* --- START: DEFINITIVE LAYOUT FIX --- */
+
+/* Style to activate full-screen info mode */
+.game-container.info-mode-active {
+    padding: 0;
+    background: #fff;
+}
+.game-container.info-mode-active #bottom-content-area {
+    position: static;
+    flex-grow: 1;
+    min-height: 0;
+}
+.game-container.info-mode-active #pokedex-info-display {
+    position: static;
+    height: 100%;
+    border-radius: 0;
+    background: #fff;
+}
+
+/* Main container for info panels */
 #pokedex-info-display {
-  background: rgba(255,255,255,0.9);
-  border-radius: 15px;
-  min-height: 0;
+  position: relative; /* Crucial for the absolute positioning of the back button */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  padding: 0;
+  gap: 1rem;
 }
+
+/* Generic scroller for all info panels */
+.info-panel-content-area {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rem 1rem 120px 1rem; /* Large bottom padding for the sticky back button */
+    color: #333;
+    position: relative;
+}
+
+/* Sticky container for the 'Back to Game' button */
+#back-button-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 70%, rgba(255, 255, 255, 0));
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+/* --- END: DEFINITIVE LAYOUT FIX --- */
+
 
 .info-panel-content-area h3 {
     text-align: center;
@@ -480,16 +498,15 @@ body {
     cursor: pointer;
 }
 
-/* NEW: Styles for info pages */
 .info-display-box {
-    background: linear-gradient(145deg, #e2e8f0, #f8fafc); /* Light Gray */
-    border: 3px solid #cbd5e0; /* Medium gray border */
+    background: linear-gradient(145deg, #e2e8f0, #f8fafc);
+    border: 3px solid #cbd5e0;
     border-radius: 20px;
     padding: 1.5rem;
     text-align: center;
     margin: 1rem auto 2rem auto;
     box-shadow: 0 8px 32px rgba(113, 128, 150, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    color: #2d3748; /* Dark text */
+    color: #2d3748;
     max-width: 300px;
 }
 
@@ -530,28 +547,23 @@ body {
     box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
 }
 
-
-/* This is the scroller for the detailed pokemon view */
 #pokedex-details-scroller {
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
     gap: 1rem;
-    padding: 1rem 1rem 80px 1rem; /* Added padding for consistency */
+    padding: 1rem;
     margin: 0;
-    flex-grow: 1;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     width: 100%;
-    height: 100%;
 }
 
-/* A single pokemon's detail card in the scroller */
 .pokedex-detail-card {
     flex: 0 0 100%;
     scroll-snap-align: center;
     overflow-y: auto;
-    padding-bottom: 70px; /* Extra padding to not get cut off by buttons */
+    padding-bottom: 120px;
 }
 
 .pokedex-detail-card-inner {
@@ -603,7 +615,6 @@ body {
     filter: drop-shadow(0 0 10px gold);
 }
 
-/* --- UPDATED: Experience Bar Styles --- */
 .exp-bar-container {
     width: 100%;
     margin-top: 1rem;
@@ -613,12 +624,8 @@ body {
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.exp-bar-container:hover {
-    background: rgba(0,0,0,0.15);
-}
-.exp-bar-header {
-    padding: 0.5rem;
-}
+.exp-bar-container:hover { background: rgba(0,0,0,0.15); }
+.exp-bar-header { padding: 0.5rem; }
 .exp-bar-label {
     font-size: 0.8rem;
     font-weight: bold;
@@ -637,7 +644,7 @@ body {
 }
 .exp-bar-fill {
     height: 100%;
-    width: 0%; /* Will be set by JS */
+    width: 0%;
     background: linear-gradient(90deg, #6890F0, #4ecdc4);
     border-radius: 8px;
     transition: width 0.5s ease-in-out;
@@ -667,7 +674,6 @@ body {
   50% { box-shadow: inset 0 0 20px rgba(255,255,255,1); }
 }
 
-/* --- Accordion styles for stats inside the card --- */
 .stats-accordion {
     width: 100%;
     background: rgba(255,255,255,0.7);
@@ -686,9 +692,7 @@ body {
     align-items: center;
     border-bottom: 1px solid #ddd;
 }
-.stats-accordion-header:last-of-type {
-    border-bottom: none;
-}
+.stats-accordion-header:last-of-type { border-bottom: none; }
 
 .stats-accordion-header::after {
     content: '▼';
@@ -696,9 +700,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.stats-accordion-header.active::after {
-    transform: rotate(180deg);
-}
+.stats-accordion-header.active::after { transform: rotate(180deg); }
 
 .stats-accordion-content {
     padding: 0 1rem;
@@ -708,7 +710,7 @@ body {
 }
 .stats-accordion-content.show {
     padding: 1rem;
-    max-height: 500px; /* Adjust as needed */
+    max-height: 500px;
     transition: max-height 0.5s ease-in, padding 0.5s ease-in;
 }
 .stats-accordion-content div {
@@ -763,8 +765,6 @@ body {
     opacity: 0.7;
 }
 
-
-/* CSS for Clickable Views */
 #bonus-pokeballs-container {
   display: flex;
   gap: 10px;
@@ -775,17 +775,16 @@ body {
   width: 30px;
   height: 30px;
   transition: filter 0.4s ease-in-out;
-  filter: brightness(0) opacity(0.7); /* Initial silhouette state */
+  filter: brightness(0) opacity(0.7);
 }
 
 .bonus-pokeball.unlocked {
-  filter: brightness(1) opacity(1); /* Unlocked state */
+  filter: brightness(1) opacity(1);
   transform: scale(1.1);
 }
 
-/* NEW: Active Buffs Display */
 #center-feature-container {
-    min-height: 30px; /* Same height as pokeballs to prevent layout shift */
+    min-height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -802,11 +801,8 @@ body {
   transition: all 0.3s ease;
   cursor: help;
 }
-.buff-icon:hover {
-    transform: scale(1.1);
-}
+.buff-icon:hover { transform: scale(1.1); }
 
-/* Particle effects */
 .particles {
   position: absolute;
   top: 0;
@@ -832,7 +828,6 @@ body {
   100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
 }
 
-/* Achievement popup */
 .achievement-popup {
   position: fixed;
   top: 20px;
@@ -857,18 +852,9 @@ body {
   pointer-events: auto;
 }
 
-/* Team Rocket special styling */
-.team-rocket-mode .pokemon-display {
-  background: linear-gradient(45deg, #4a0e4e, #2d1b69);
-  color: white;
-}
+.team-rocket-mode .pokemon-display { background: linear-gradient(45deg, #4a0e4e, #2d1b69); color: white; }
+.team-rocket-mode .question-text { background: linear-gradient(145deg, #8e44ad, #9b59b6); color: white; }
 
-.team-rocket-mode .question-text {
-  background: linear-gradient(145deg, #8e44ad, #9b59b6);
-  color: white;
-}
-
-/* Team Rocket Quick-Time Event */
 .rocket-popup {
   position: fixed;
   top: 50%;
@@ -881,9 +867,7 @@ body {
   text-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 
-.rocket-popup.fade-out {
-    animation: rocket-leave 0.2s ease-in forwards;
-}
+.rocket-popup.fade-out { animation: rocket-leave 0.2s ease-in forwards; }
 
 .rocket-text-popup {
     position: fixed;
@@ -901,11 +885,8 @@ body {
     animation: rocket-text-enter 0.3s ease-out forwards;
 }
 
-.rocket-text-popup.fade-out {
-    animation: rocket-text-leave 0.3s ease-in forwards;
-}
+.rocket-text-popup.fade-out { animation: rocket-text-leave 0.3s ease-in forwards; }
 
-/* Meowth Quick-Time Event */
 .meowth-popup {
   position: fixed;
   top: 50%;
@@ -915,20 +896,18 @@ body {
   cursor: pointer;
   z-index: 500;
   animation: rocket-enter 0.2s ease-out forwards, rocket-shake 0.5s 0.2s linear infinite;
-  text-shadow: 0 5px 15px rgba(255, 215, 0, 0.5); /* Gold shadow */
+  text-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
 }
 
-.meowth-popup.fade-out {
-    animation: rocket-leave 0.2s ease-in forwards;
-}
+.meowth-popup.fade-out { animation: rocket-leave 0.2s ease-in forwards; }
 
 .meowth-text-popup {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(255, 193, 7, 0.9); /* Gold color */
-    color: #333; /* Dark text for contrast */
+    background: rgba(255, 193, 7, 0.9);
+    color: #333;
     padding: 4rem;
     font-size: 1.2rem;
     font-weight: bold;
@@ -938,9 +917,7 @@ body {
     animation: rocket-text-enter 0.3s ease-out forwards;
 }
 
-.meowth-text-popup.fade-out {
-    animation: rocket-text-leave 0.3s ease-in forwards;
-}
+.meowth-text-popup.fade-out { animation: rocket-text-leave 0.3s ease-in forwards; }
 
 
 @keyframes rocket-text-enter {
@@ -969,11 +946,7 @@ body {
   75% { transform: translate(-48%, -52%) rotate(5deg); }
 }
 
-/* CSS for Clickable Views */
-#map-button,
-#achievements-button, #shinies-button, #shop-button, #bag-button, #badges-button {
-  cursor: pointer;
-}
+#map-button, #achievements-button, #shinies-button, #shop-button, #bag-button, #badges-button { cursor: pointer; }
 
 #item-display-grid, #shiny-grid, #badge-grid {
     display: grid;
@@ -981,16 +954,18 @@ body {
     grid-template-rows: repeat(2, auto);
     gap: 0.5rem;
     overflow-x: auto;
-    padding-bottom: 1rem; 
+    overflow-y: hidden;
+    padding-bottom: 1rem;
     justify-content: flex-start;
     align-items: start;
 }
+
 .shiny-grid-item {
   background: rgba(0,0,0,0.05);
   border-radius: 10px;
   padding: 5px;
   text-align: center;
-  width: 90px; /* Set fixed width */
+  width: 90px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1017,8 +992,7 @@ body {
     display: flex;
     flex-direction: column;
     transition: all 0.2s ease;
-    width: 140px; /* Set fixed width */
-
+    width: 140px;
 }
 .item-grid-entry.can-buy:hover, .item-grid-entry.can-use:hover {
   transform: translateY(-3px);
@@ -1045,7 +1019,6 @@ body {
 }
 .item-grid-entry .buy-button:disabled, .item-grid-entry .use-button:disabled { background: #aaa; cursor: not-allowed; }
 
-/* Evolution & Confirmation Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1093,13 +1066,8 @@ body {
     border-radius: 10px;
     transition: background-color 0.2s ease;
 }
-.evolution-option:hover {
-    background-color: #eee;
-}
-.evolution-option img {
-    width: 80px;
-    height: 80px;
-}
+.evolution-option:hover { background-color: #eee; }
+.evolution-option img { width: 80px; height: 80px; }
 .evolution-option p {
     margin: 0.5rem 0 0 0;
     font-weight: bold;
@@ -1110,30 +1078,15 @@ body {
     color: white;
 }
 
-/* Gym Challenge Styles */
-.gym-leader-mode .pokemon-display {
-    background: linear-gradient(145deg, #333, #555);
-}
-.gym-leader-mode .question-text {
-    background: #fff;
-    color: #333;
-    border: 3px solid #feca57;
-}
+.gym-leader-mode .pokemon-display { background: linear-gradient(145deg, #333, #555); }
+.gym-leader-mode .question-text { background: #fff; color: #333; border: 3px solid #feca57; }
 
-/* --- NEW: Elite Four Challenge Styles --- */
-.e4-mode .pokemon-display {
-    background: linear-gradient(145deg, #4a0e4e, #2d1b69); /* Dark purple/indigo */
-}
-.e4-mode .question-text {
-    background: #fff;
-    color: #333;
-    border: 3px solid #ffd700; /* Gold border */
-}
+.e4-mode .pokemon-display { background: linear-gradient(145deg, #4a0e4e, #2d1b69); }
+.e4-mode .question-text { background: #fff; color: #333; border: 3px solid #ffd700; }
 
-/* --- CORRECTED: E4 Challenge Button in Badges View --- */
 .e4-challenge-container {
     padding: 1rem;
-    margin-top: 1rem; /* Adds some space between badges and this button */
+    margin-top: 1rem;
     width: 100%;
 }
 
@@ -1158,23 +1111,15 @@ body {
     color: #ffd700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
-.e4-challenge-box p {
-    margin: 0;
-    color: #a0aec0;
-}
+.e4-challenge-box p { margin: 0; color: #a0aec0; }
 .e4-challenge-box.disabled {
     opacity: 0.6;
     cursor: not-allowed;
     border-color: #718096;
 }
-.e4-challenge-box.champion h3 {
-    color: #4ecdc4;
-}
-.e4-challenge-box.champion {
-    border-color: #4ecdc4;
-}
+.e4-challenge-box.champion h3 { color: #4ecdc4; }
+.e4-challenge-box.champion { border-color: #4ecdc4; }
 
-/* Badge Display Styles */
 .badge-entry {
     background: white;
     border: 1px solid #ddd;
@@ -1186,7 +1131,6 @@ body {
     flex-direction: column;
     align-items: center;
     width: 160px;
-
 }
 .badge-entry.locked {
     opacity: 0.6;
@@ -1209,22 +1153,13 @@ body {
     flex-grow: 1;
 }
 
-/* Badge Earned Animation */
-.badge-earned-animation {
-    animation: scaleDown 0.4s ease-in-out;
-}
+.badge-earned-animation { animation: scaleDown 0.4s ease-in-out; }
 
 @keyframes scaleDown {
-    50% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
-    }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
 }
 
-
-/* Responsive adjustments */
 @media (max-width: 480px) {
   .game-container:not(.info-mode-active) { padding: 0.5rem; gap: 0.2rem; }
   .stat-item { font-size: 0.7rem; padding: 0.2rem 0.4rem; }
@@ -1232,14 +1167,11 @@ body {
   .answer-button { font-size: 0.7rem; padding: 0.5rem; }
 }
 
-/* Hide elements initially */
 .hidden { display: none !important; }
 
-/* Fade transitions */
 .fade-out { opacity: 0; transition: opacity 0.3s ease; }
 .fade-in { opacity: 1; transition: opacity 0.3s ease; }
 
-/* Enhanced Shiny Display */
 .shiny-showcase {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1258,9 +1190,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: all 0.4s ease;
-    box-shadow:
-        0 8px 32px rgba(255, 215, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .shiny-pokemon-card::before {
     content: '';
@@ -1269,12 +1199,7 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent,
-        rgba(255, 215, 0, 0.1),
-        transparent
-    );
+    background: linear-gradient( 45deg, transparent, rgba(255, 215, 0, 0.1), transparent );
     transform: rotate(45deg);
     animation: shimmerSweep 3s infinite;
 }
@@ -1287,12 +1212,9 @@ body {
 
 .shiny-pokemon-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow:
-        0 12px 40px rgba(255, 215, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     border-color: #ffed4a;
 }
-
 
 @keyframes crownFloat {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -1309,9 +1231,7 @@ body {
     justify-content: center;
     position: relative;
     border: 4px solid rgba(255, 215, 0, 0.6);
-    box-shadow:
-        0 0 30px rgba(255, 215, 0, 0.6),
-        inset 0 0 20px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3);
 }
 .shiny-sprite-container::before {
     content: '';
@@ -1319,12 +1239,7 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 15px;
-    background: linear-gradient(
-        45deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.1) 100%
-    );
+    background: linear-gradient( 45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100% );
 }
 @keyframes rainbowSpin {
     from { transform: rotate(0deg); }
@@ -1337,11 +1252,7 @@ body {
     object-fit: contain;
     position: relative;
     z-index: 2;
-    filter:
-        drop-shadow(0 0 15px gold)
-        drop-shadow(0 0 30px rgba(255, 215, 0, 0.8))
-        brightness(1.1)
-        contrast(1.1);
+    filter: drop-shadow(0 0 15px gold) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)) brightness(1.1) contrast(1.1);
     animation: gentleBob 3s ease-in-out infinite;
 }
 @keyframes gentleBob {
@@ -1349,10 +1260,7 @@ body {
     50% { transform: translateY(-8px); }
 }
 
-.shiny-info {
-    position: relative;
-    z-index: 5;
-}
+.shiny-info { position: relative; z-index: 5; }
 
 .shiny-info .shiny-name {
     font-size: 1.4rem;
@@ -1395,16 +1303,9 @@ body {
 .sparkle:nth-child(5) { top: 60%; left: 80%; animation-delay: 2s; }
 
 @keyframes sparkleFloat {
-    0%, 100% {
-        opacity: 0;
-        transform: translateY(0px) scale(0.5);
-    }
-    50% {
-        opacity: 1;
-        transform: translateY(-10px) scale(1);
-    }
+    0%, 100% { opacity: 0; transform: translateY(0px) scale(0.5); }
+    50% { opacity: 1; transform: translateY(-10px) scale(1); }
 }
-/* Enhanced red area shiny effects */
 .shiny-pokemon-card::after {
     content: '';
     position: absolute;
@@ -1412,10 +1313,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+    background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(255, 140, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
     border-radius: 20px;
     pointer-events: none;
     animation: redAreaGlow 4s ease-in-out infinite;
@@ -1431,28 +1329,12 @@ body {
     box-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
 }
 
-.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(1) {
-    top: 15%; left: 10%; animation-delay: 0s;
-    background: radial-gradient(circle, #ffd700 0%, transparent 70%);
-}
-.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(2) {
-    top: 25%; right: 15%; animation-delay: 0.7s;
-    background: radial-gradient(circle, #ffed4a 0%, transparent 70%);
-}
-.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(3) {
-    bottom: 20%; left: 20%; animation-delay: 1.4s;
-    background: radial-gradient(circle, #fff 0%, transparent 70%);
-}
-.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(4) {
-    bottom: 30%; right: 10%; animation-delay: 2.1s;
-    background: radial-gradient(circle, #ffd700 0%, transparent 70%);
-}
-.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(5) {
-    top: 50%; left: 85%; animation-delay: 2.8s;
-    background: radial-gradient(circle, #ffed4a 0%, transparent 70%);
-}
+.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; background: radial-gradient(circle, #ffd700 0%, transparent 70%); }
+.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(2) { top: 25%; right: 15%; animation-delay: 0.7s; background: radial-gradient(circle, #ffed4a 0%, transparent 70%); }
+.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 1.4s; background: radial-gradient(circle, #fff 0%, transparent 70%); }
+.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 2.1s; background: radial-gradient(circle, #ffd700 0%, transparent 70%); }
+.shiny-pokemon-card .shiny-sparkles .sparkle:nth-child(5) { top: 50%; left: 85%; animation-delay: 2.8s; background: radial-gradient(circle, #ffed4a 0%, transparent 70%); }
 
-/* Additional floating sparkles for red area */
 .red-area-sparkles {
     position: absolute;
     width: 100%;
@@ -1479,34 +1361,14 @@ body {
 .red-sparkle:nth-child(5) { top: 20%; left: 90%; animation-delay: 4s; }
 
 @keyframes redSparkleFloat {
-    0%, 100% {
-        opacity: 0;
-        transform: translateY(0px) scale(0.5);
-    }
-    25% {
-        opacity: 0.6;
-        transform: translateY(-5px) scale(0.8);
-    }
-    50% {
-        opacity: 1;
-        transform: translateY(-10px) scale(1);
-    }
-    75% {
-        opacity: 0.6;
-        transform: translateY(-5px) scale(0.8);
-    }
+    0%, 100% { opacity: 0; transform: translateY(0px) scale(0.5); }
+    25% { opacity: 0.6; transform: translateY(-5px) scale(0.8); }
+    50% { opacity: 1; transform: translateY(-10px) scale(1); }
+    75% { opacity: 0.6; transform: translateY(-5px) scale(0.8); }
 }
 
-/* Enhanced shimmer for the entire card */
 .shiny-pokemon-card::before {
-    background: linear-gradient(
-        135deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 25%,
-        rgba(255, 215, 0, 0.15) 50%,
-        rgba(255, 255, 255, 0.1) 75%,
-        transparent 100%
-    );
+    background: linear-gradient( 135deg, transparent 0%, rgba(255, 255, 255, 0.1) 25%, rgba(255, 215, 0, 0.15) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 100% );
     animation: enhancedShimmer 4s ease-in-out infinite;
 }
 
@@ -1527,29 +1389,26 @@ body {
     opacity: 0.5;
 }
 
-/* --- Enhanced Achievement Display --- */
 .achievement-showcase {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     padding: 1rem;
-    max-height: calc(100vh - 200px); /* Adjust based on your header/footer */
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
 }
 
 .achievement-card {
-    background: linear-gradient(145deg, #4a5568, #2d3748); /* Dark Slate/Gray */
-    border: 3px solid #718096; /* Lighter gray border */
+    background: linear-gradient(145deg, #4a5568, #2d3748);
+    border: 3px solid #718096;
     border-radius: 20px;
     padding: 1.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
     transition: all 0.4s ease;
-    box-shadow:
-        0 8px 32px rgba(113, 128, 150, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    color: #f7fafc; /* White-ish text */
+    box-shadow: 0 8px 32px rgba(113, 128, 150, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: #f7fafc;
 }
 
 .achievement-card::before {
@@ -1559,21 +1418,14 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent,
-        rgba(160, 174, 192, 0.1), /* Light gray shimmer */
-        transparent
-    );
+    background: linear-gradient( 45deg, transparent, rgba(160, 174, 192, 0.1), transparent );
     transform: rotate(45deg);
     animation: shimmerSweep 3.5s infinite;
 }
 
 .achievement-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow:
-        0 12px 40px rgba(113, 128, 150, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 40px rgba(113, 128, 150, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border-color: #a0aec0;
 }
 
@@ -1585,9 +1437,7 @@ body {
 }
 .achievement-card.locked:hover {
     transform: none;
-    box-shadow:
-        0 8px 32px rgba(113, 128, 150, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(113, 128, 150, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 
@@ -1601,14 +1451,14 @@ body {
 .achievement-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #e2e8f0; /* Lighter gray text */
+    color: #e2e8f0;
     margin: 0 0 0.5rem 0;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .achievement-description {
     font-size: 0.9rem;
-    color: #a0aec0; /* Medium gray text */
+    color: #a0aec0;
     line-height: 1.4;
     margin: 0;
 }
@@ -1634,55 +1484,6 @@ body {
     font-size: 4rem;
     margin-bottom: 1rem;
     opacity: 0.5;
-}
-
-/* ================================================= */
-/* === COMPLETE AND FINAL INFO PANEL LAYOUT FIX === */
-/* ================================================= */
-.game-container.info-mode-active {
-    padding: 0;
-    background: #fff;
-}
-
-.game-container.info-mode-active #bottom-content-area {
-    position: static;
-    flex-grow: 1;
-    min-height: 0;
-}
-
-/* This rule ensures the main panel is a flex container that can manage its children's layout correctly. */
-.game-container.info-mode-active #pokedex-info-display {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: static;
-    border-radius: 0;
-    background: #fff;
-}
-
-/* This makes the content area (where badges, pokemon details, etc. are) grow to fill the available space and scroll if its content is too tall. */
-.info-panel-content-area {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    padding: 1rem;
-    color: #333;
-    position: relative;
-    height: auto; /* Overrides any previous fixed height */
-}
-
-/* This makes the 'Back to Game' button a permanent footer at the bottom of the panel, not an overlay. */
-#back-button-container {
-    flex-shrink: 0;
-    position: static;
-    width: 100%;
-    padding: 1rem;
-    background: #fff;
-    border-top: 1px solid #e2e8f0;
-    z-index: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
 }
 
 </style>
@@ -1816,6 +1617,8 @@ body {
 
   </body>
 </html>
+
+  <script id="pokedex-data" type="application/json"
 
   <script id="pokedex-data" type="application/json">
     [
