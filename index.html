@@ -4524,20 +4524,26 @@ body {
     }
 
     function getAvailablePokemon() {
-        const badgeCount = Object.keys(earnedBadges).filter(key => !key.startsWith('failed_') && key !== 'champion').length;
-        
-        const accessibleLocations = new Set();
-        for (let i = 0; i <= badgeCount; i++) {
-            if (LOCATION_UNLOCKS[i]) {
-                LOCATION_UNLOCKS[i].locations.forEach(loc => accessibleLocations.add(loc));
-            }
-        }
-
-        return pokemonData.filter(p => {
-            if (!p.locations || p.locations.length === 0) return false;
-            return p.locations.some(loc => accessibleLocations.has(loc));
-        });
+    // Check if the player has beaten the Elite Four
+    if (earnedBadges.champion) {
+        return pokemonData; // Return all 151 Pokémon
     }
+
+    // Original logic for players who are not yet champion
+    const badgeCount = Object.keys(earnedBadges).filter(key => !key.startsWith('failed_') && key !== 'champion').length;
+    
+    const accessibleLocations = new Set();
+    for (let i = 0; i <= badgeCount; i++) {
+        if (LOCATION_UNLOCKS[i]) {
+            LOCATION_UNLOCKS[i].locations.forEach(loc => accessibleLocations.add(loc));
+        }
+    }
+
+    return pokemonData.filter(p => {
+        if (!p.locations || p.locations.length === 0) return false;
+        return p.locations.some(loc => accessibleLocations.has(loc));
+    });
+}
 
     function updateAllCounters() {
       const unlockedCount = Object.keys(unlocked).length;
