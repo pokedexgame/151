@@ -4096,7 +4096,7 @@ body {
 ]
 
   </script>
-  <script>
+<script>
     // Game state variables
     let pokemonData = [];
     const pokemonDataScript = document.getElementById("pokedex-data");
@@ -4523,27 +4523,28 @@ body {
       localStorage.setItem("pokemonSoundEnabled", soundEnabled);
     }
 
-    function getAvailablePokemon() {
-    // Check if the player has beaten the Elite Four
-    if (earnedBadges.champion) {
-        return pokemonData; // Return all 151 Pokémon
-    }
+function getAvailablePokemon() {
+        const badgeCount = Object.keys(earnedBadges).filter(key => !key.startsWith('failed_') && key !== 'champion').length;
 
-    // Original logic for players who are not yet champion
-    const badgeCount = Object.keys(earnedBadges).filter(key => !key.startsWith('failed_') && key !== 'champion').length;
-    
-    const accessibleLocations = new Set();
-    for (let i = 0; i <= badgeCount; i++) {
-        if (LOCATION_UNLOCKS[i]) {
-            LOCATION_UNLOCKS[i].locations.forEach(loc => accessibleLocations.add(loc));
+        // NEW: If player has 8+ badges or is champion, unlock all Pokémon
+        if (badgeCount >= 8 || earnedBadges.champion) {
+            return pokemonData; // Return all 151 Pokémon
         }
-    }
 
-    return pokemonData.filter(p => {
-        if (!p.locations || p.locations.length === 0) return false;
-        return p.locations.some(loc => accessibleLocations.has(loc));
-    });
-}
+        // Original logic for players with fewer than 8 badges
+        const accessibleLocations = new Set();
+        for (let i = 0; i <= badgeCount; i++) {
+            if (LOCATION_UNLOCKS[i]) {
+                LOCATION_UNLOCKS[i].locations.forEach(loc => accessibleLocations.add(loc));
+            }
+        }
+
+
+        return pokemonData.filter(p => {
+            if (!p.locations || p.locations.length === 0) return false;
+            return p.locations.some(loc => accessibleLocations.has(loc));
+        });
+    }
 
     function updateAllCounters() {
       const unlockedCount = Object.keys(unlocked).length;
@@ -6520,3 +6521,5 @@ body {
         return container;
     }
   </script>
+</body>
+</html>
