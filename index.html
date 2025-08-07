@@ -4127,6 +4127,7 @@ body {
     let gameAchievements = {};
     let streakAchievementsThisRun = {};
     let soundEnabled = true;
+    let easyModeEnabled = false; // Easy Mode Toggle
     let gameMode = 'initial';
     let isMenuOpen = false;
 
@@ -4175,7 +4176,7 @@ body {
     const SHOP_ITEMS = {
         pokeball: { name: "Poké Ball", price: 300, description: "Use ball during a catch to skip 1 bonus question.", sprite: "sprites/pokeball.png", effect: 1, type: 'catch_assist' },
         greatball: { name: "Great Ball", price: 550, description: "Use ball during a catch to skip 2 bonus questions.", sprite: "sprites/greatball.png", effect: 2, type: 'catch_assist' },
-        ultraball: { name: "Ultra Ball", price: 700, description: "Use ball during a catch to skip all bonus questions.", sprite: "sprites/ultraball.png", effect: 3, type: 'catch_assist' },
+        ultraball: { name: "Ultra Ball", price: 700, description: "Use ball during a catch to skip 3 bonus questions.", sprite: "sprites/ultraball.png", effect: 3, type: 'catch_assist' },
         evolutionStone: { name: "Evolution Stone", price: 1000, description: "An experimental stone from Silph Co. that forces evolution.", sprite: "sprites/evolutionstone.png", type: 'evolution' },
         escaperope: { name: "Escape Rope", price: 150, description: "Use on a bonus question to get a new question.", sprite: "sprites/escaperope.png", type: 'reroll_question' },
         pokeflute: { name: "Poké Flute", price: 100, description: "Use during the silhouette phase to reveal the Pokémon.", sprite: "sprites/pokeflute.png", type: 'autoguess' },
@@ -4505,6 +4506,7 @@ body {
       activeBuffs = JSON.parse(localStorage.getItem("pokemonBuffs")) || { repel: 0, luckyegg: 0, lure: 0, maxlure: 0 };
       guaranteedShinyPool = JSON.parse(localStorage.getItem("pokemonShinyPool")) || [];
       soundEnabled = localStorage.getItem("pokemonSoundEnabled") === 'false' ? false : true;
+      easyModeEnabled = localStorage.getItem("pokemonEasyModeEnabled") === 'true' ? true : false;
 
 
       updateAllCounters();
@@ -4521,6 +4523,7 @@ body {
       localStorage.setItem("pokemonBuffs", JSON.stringify(activeBuffs));
       localStorage.setItem("pokemonShinyPool", JSON.stringify(guaranteedShinyPool));
       localStorage.setItem("pokemonSoundEnabled", soundEnabled);
+      localStorage.setItem("pokemonEasyModeEnabled", easyModeEnabled);
     }
 
 function getAvailablePokemon() {
@@ -4964,19 +4967,26 @@ function getAvailablePokemon() {
         if (currentIsShinyRound) pokemonImg.classList.add('shiny');
 
         let numBonusQuestions;
-        const isLegendary = [144, 145, 146, 150, 151].includes(currentPokemon.id);
-        const isEvolved = Object.values(EVOLUTION_MAP).flat().includes(currentPokemon.id);
+        let availableStats;
 
-        if (isLegendary) {
-            numBonusQuestions = 4;
-        } else if (isEvolved) {
-            numBonusQuestions = 3;
-        } else {
+        if (easyModeEnabled) {
             numBonusQuestions = 2;
+            availableStats = ["id", "type", "super_effective", "weak_against"];
+        } else {
+            const isLegendary = [144, 145, 146, 150, 151].includes(currentPokemon.id);
+            const isEvolved = Object.values(EVOLUTION_MAP).flat().includes(currentPokemon.id);
+
+            if (isLegendary) {
+                numBonusQuestions = 4;
+            } else if (isEvolved) {
+                numBonusQuestions = 3;
+            } else {
+                numBonusQuestions = 2;
+            }
+            availableStats = ["height","weight","ability","id","egg_group","type","super_effective","weak_against","move", "location"];
         }
 
-        const stats = ["height","weight","ability","id","egg_group","type","super_effective","weak_against","move", "location"];
-        bonusQuestions = shuffle(stats).slice(0, numBonusQuestions);
+        bonusQuestions = shuffle(availableStats).slice(0, numBonusQuestions);
         bonusIndex = 0;
 
         const pokeballsContainer = document.getElementById('bonus-pokeballs-container');
@@ -6402,6 +6412,46 @@ function getAvailablePokemon() {
         container.className = 'info-panel-content-area';
         container.innerHTML = `<h3>⚙️ Settings</h3>`;
         
+        // --- Easy Mode Toggle ---
+        const easyModeToggleContainer = document.createElement('div');
+        easyModeToggleContainer.className = 'settings-toggle';
+
+        const easyModeLabel = document.createElement('span');
+        easyModeLabel.innerHTML = '<strong>Easy Mode</strong><br><small style="color:#555;">2 questions per catch, simpler questions.</small>';
+        easyModeLabel.style.lineHeight = '1.3';
+
+        const easyModeButton = document.createElement('button');
+        easyModeButton.style.width = '80px';
+        easyModeButton.style.fontWeight = 'bold';
+        easyModeButton.style.color = 'white';
+        easyModeButton.style.transition = 'background-color 0.3s';
+        easyModeButton.style.border = 'none';
+        easyModeButton.style.borderRadius = '8px';
+        easyModeButton.style.cursor = 'pointer';
+        easyModeButton.style.padding = '0.75rem 1rem';
+
+        const setEasyModeButtonStyle = () => {
+            if (easyModeEnabled) {
+                easyModeButton.textContent = 'ON';
+                easyModeButton.style.background = 'linear-gradient(145deg, #4CAF50, #45a049)';
+            } else {
+                easyModeButton.textContent = 'OFF';
+                easyModeButton.style.background = 'linear-gradient(145deg, #f44336, #d32f2f)';
+            }
+        };
+        setEasyModeButtonStyle();
+
+        easyModeButton.onclick = () => {
+            easyModeEnabled = !easyModeEnabled;
+            setEasyModeButtonStyle();
+            saveGameData();
+        };
+
+        easyModeToggleContainer.appendChild(easyModeLabel);
+        easyModeToggleContainer.appendChild(easyModeButton);
+        container.appendChild(easyModeToggleContainer);
+        // --- End Easy Mode Toggle ---
+
         const soundToggleContainer = document.createElement('div');
         soundToggleContainer.className = 'settings-toggle';
         
